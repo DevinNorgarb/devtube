@@ -1,6 +1,6 @@
 {
   "name": "devswebdev/devtube",
-    "description": "A simple boilerplate to create new laravel packages.",
+    "description": "A Laravel library for downloading videos from the net by simply passing a URL",
     "type": "library",
     "version": "1.0.1-dev",
     "require": {
