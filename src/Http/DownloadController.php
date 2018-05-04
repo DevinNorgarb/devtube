@@ -10,7 +10,8 @@ class DownloadController extends Controller
     {
         $yt = new YouTubeDownloader();
         $links = $yt->getDownloadLinks("https://www.youtube.com/watch?v=QxsmWxxouIM");
-        dd($links);
+        $poss = $yt->stream($links);
+        dd($poss);
         return "This is my todo list from the controller";
     }
 }
