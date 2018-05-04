@@ -4,7 +4,7 @@
     "type": "library",
     "version": "1.0.0-dev",
     "require": {
-      "laravel/framework": "5.5.*",
+      "laravel/framework": "5.*",
       "illuminate/support": "~5"
     },
     "require-dev": {
