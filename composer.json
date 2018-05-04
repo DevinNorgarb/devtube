@@ -1,0 +1,38 @@
+{
+  "name": "devswebdev/devtube",
+    "description": "A simple boilerplate to create new laravel packages.",
+    "type": "library",
+    "version": "1.0.0-dev",
+    "require": {
+      "laravel/framework": "5.5.*",
+      "illuminate/support": "~5"
+    },
+    "require-dev": {
+        "vlucas/phpdotenv": "^2.4",
+        "orchestra/testbench": "^3.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "DevinNorgarb",
+            "email": "dnorgarb@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "DevsWebDev\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DevsWebDev\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "DevsWebDev\\DevTube\\PackageServiceProvider"
+            ]
+        }
+    }
+}
