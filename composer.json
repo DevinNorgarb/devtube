@@ -2,7 +2,7 @@
   "name": "devswebdev/devtube",
     "description": "A simple boilerplate to create new laravel packages.",
     "type": "library",
-    "version": "1.0.0-dev",
+    "version": "1.0.1-dev",
     "require": {
       "laravel/framework": "5.*",
       "illuminate/support": "~5"
