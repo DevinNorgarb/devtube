@@ -2,55 +2,67 @@
 
 namespace DevsWebDev\DevTube;
 
+use Illuminate\Support\Facades\Storage;
 use Masih\YoutubeDownloader\YoutubeDownloader;
 
 class Download
 {
-    protected $youtube;
+    public $youtube;
 
-    protected $path;
+    public $path;
+
+    public $savedPath;
+
 
     public function __construct($url, $path)
     {
-        // dd($url);
-        $this->youtube = new YoutubeDownloader($url);
-
-        $this->path = $path ?? storage_path("/");
-
-        $this->youtube->setPath($this->path);
+        $this->url =  $url;
+        $this->path =  storage_path("app/public/music");
     }
 
     public function download()
     {
-        $this->youtube->onProgress = function ($downloadedBytes, $fileSize, $index, $count) {
+        $youtube = new YoutubeDownloader($this->url);
+        $youtube->setPath($this->path);
+        $this->youtube = $youtube;
+
+        $youtube->onProgress = function ($downloadedBytes, $fileSize, $index, $count) {
             if ($count > 1) {
-                echo '[' . $index . ' of ' . $count . ' videos] ';
+                // echo '[' . $index . ' of ' . $count . ' videos] ';
             }
             if ($fileSize > 0) {
-                echo "\r" . 'Downloaded ' . $downloadedBytes . ' of ' . $fileSize . ' bytes [%' . number_format($downloadedBytes * 100 / $fileSize, 2) . '].';
+                // echo "\r" . 'Downloaded ' . $downloadedBytes . ' of ' . $fileSize . ' bytes [%' . number_format($downloadedBytes * 100 / $fileSize, 2) . '].';
             } else {
-                echo "\r" . 'Downloading...';
+                // echo "\r" . 'Downloading...';
             }
         };
 
-        $this->youtube->onFinalized = function ($filePath, $fileSize, $index, $count) {
-            if ($count > 1) {
-                echo '[' . $index . ' of ' . $count . ' videos] ';
-            }
-            echo $filePath . ' Finalized' . PHP_EOL;
+        $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
+            return  $this->redirect($filePath);
         };
 
-        $this->youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
-            if ($count > 1) {
-                echo '[' . $index . ' of ' . $count . ' videos] ';
-            }
-            echo 'Downloading of ' . $fileSize . ' bytes has been completed. It is saved in ' . $filePath . PHP_EOL;
-        };
+        $youtube->download();
+    }
+
+    public function redirect($filePath)
+    {
+        $youtube = $this->youtube;
+        $file = basename($filePath);
 
 
-        return $this->youtube->download();
-        // return response()->streamDownload(function () {
-        // }, 'laravel-readme.mp4');
-        // return view('welcome') ;
+        // $files = \Storage::files('public/music');
+        // dump($files);
+        session([$_SERVER['REMOTE_ADDR'] => 'app/public/music/'.$file]);
+
+        // \Session::put('public/music/'.$file:'public/music/'.$file)
+        // dump('public/music/'.$file);
+        // $dl = Storage::download('public/music/'.$file);
+        // // return $dl;
+        // dump($dl);
+        // $contents = Storage::get('public/music/'.$file);
+        // // return json_encode($contents);
+        // // dump($contents);
+        // $url = \Storage::url('public/music/'.$file);
+        // echo $url;
     }
 }
