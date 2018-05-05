@@ -1,24 +1,27 @@
 <?php
 
-namespace DevsWebDev\DevTube\Http;
+namespace DevsWebDev\DevTube;
 
-use App\Http\Controllers\Controller;
 use Masih\YoutubeDownloader\YoutubeDownloader;
 
-class DownloadController extends Controller
+class Download
 {
-    public $youtube;
+    protected $youtube;
 
-    public function __construct($id = null, $location = null)
+    protected $path;
+
+    public function __construct($url, $path)
     {
-        $this->youtube = new YoutubeDownloader($id ?? "WO5X9ZUzqXM");
-        $this->youtube->setPath(storage_path($location ?? "/")); // without trailing slash
+        $this->youtube = new YoutubeDownloader($url);
+
+        $this->path = $path ?? storage_path("/");
+
+        $this->youtube->setPath($this->path);
     }
 
     public function download()
     {
-        $youtube = $this->youtube;
-        $youtube->onProgress = function ($downloadedBytes, $fileSize, $index, $count) {
+        $this->youtube->onProgress = function ($downloadedBytes, $fileSize, $index, $count) {
             if ($count > 1) {
                 echo '[' . $index . ' of ' . $count . ' videos] ';
             }
@@ -26,23 +29,23 @@ class DownloadController extends Controller
                 echo "\r" . 'Downloaded ' . $downloadedBytes . ' of ' . $fileSize . ' bytes [%' . number_format($downloadedBytes * 100 / $fileSize, 2) . '].';
             } else {
                 echo "\r" . 'Downloading...';
-            } // File size is unknown, so just keep downloading
+            }
         };
 
-        $youtube->onFinalized = function ($filePath, $fileSize, $index, $count) {
+        $this->youtube->onFinalized = function ($filePath, $fileSize, $index, $count) {
             if ($count > 1) {
                 echo '[' . $index . ' of ' . $count . ' videos] ';
             }
             echo $filePath . ' Finalized' . PHP_EOL;
         };
 
-        $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
+        $this->youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
             if ($count > 1) {
                 echo '[' . $index . ' of ' . $count . ' videos] ';
             }
             echo 'Downloading of ' . $fileSize . ' bytes has been completed. It is saved in ' . $filePath . PHP_EOL;
         };
 
-        $youtube->download();
+        return  $this->youtube->download();
     }
 }
