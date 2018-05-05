@@ -24,33 +24,33 @@ class Download
     {
         $this->youtube->onProgress = function ($downloadedBytes, $fileSize, $index, $count) {
             if ($count > 1) {
-                // echo '[' . $index . ' of ' . $count . ' videos] ';
+                echo '[' . $index . ' of ' . $count . ' videos] ';
             }
             if ($fileSize > 0) {
-                // echo "\r" . 'Downloaded ' . $downloadedBytes . ' of ' . $fileSize . ' bytes [%' . number_format($downloadedBytes * 100 / $fileSize, 2) . '].';
+                echo "\r" . 'Downloaded ' . $downloadedBytes . ' of ' . $fileSize . ' bytes [%' . number_format($downloadedBytes * 100 / $fileSize, 2) . '].';
             } else {
-                // echo "\r" . 'Downloading...';
+                echo "\r" . 'Downloading...';
             }
         };
 
         $this->youtube->onFinalized = function ($filePath, $fileSize, $index, $count) {
             if ($count > 1) {
-                // echo '[' . $index . ' of ' . $count . ' videos] ';
+                echo '[' . $index . ' of ' . $count . ' videos] ';
             }
-            // echo $filePath . ' Finalized' . PHP_EOL;
+            echo $filePath . ' Finalized' . PHP_EOL;
         };
 
         $this->youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
             if ($count > 1) {
-                // echo '[' . $index . ' of ' . $count . ' videos] ';
+                echo '[' . $index . ' of ' . $count . ' videos] ';
             }
-            // echo 'Downloading of ' . $fileSize . ' bytes has been completed. It is saved in ' . $filePath . PHP_EOL;
+            echo 'Downloading of ' . $fileSize . ' bytes has been completed. It is saved in ' . $filePath . PHP_EOL;
         };
 
 
-        return response()->streamDownload(function () {
-            $this->youtube->download();
-        }, 'laravel-readme.mp4');
+        return $this->youtube->download();
+        // return response()->streamDownload(function () {
+        // }, 'laravel-readme.mp4');
         // return view('welcome') ;
     }
 }
