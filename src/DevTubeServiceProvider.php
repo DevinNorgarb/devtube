@@ -2,6 +2,7 @@
 
 namespace DevsWebDev\DevTube;
 
+use DevsWebDev\DevTube\Commands\DownloadCommand;
 use Illuminate\Support\ServiceProvider;
 
 class DevTubeServiceProvider extends ServiceProvider
@@ -14,6 +15,12 @@ class DevTubeServiceProvider extends ServiceProvider
         $this->app->bind('devtube', function ($app) {
             return new DevTube;
         });
+
+        $this->app->bind('command.devtube:download', DownloadCommand::class);
+
+        $this->commands([
+            'command.devtube:download',
+        ]);
     }
 
     /**
