@@ -16,6 +16,13 @@ and it should be writable (e.g. `chmod 777`).
 php artisan vendor:publish --provider="DevsWebDev\DevTube\DevTubeServiceProvider" --tag="migrations"
 `` -->
 
+Publish vendor assets
+
+```bash
+php artisan vendor:publish --provider="DevsWebDev\DevTube\DevTubeServiceProvider"
+```
+
+
 An Example
 
 ```php
