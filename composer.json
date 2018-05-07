@@ -45,7 +45,5 @@
                 "DevsWebDev\\DevTube\\DevTubeServiceProvider"
             ]
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": false
+    }
 }
