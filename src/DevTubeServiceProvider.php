@@ -21,5 +21,8 @@ class DevTubeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishes([
+        __DIR__.'/../config/devtube.php' => config_path('devtube.php')
+      ], 'config');
     }
 }
