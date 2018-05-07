@@ -4,7 +4,7 @@ namespace DevsWebDev\DevTube;
 
 use Illuminate\Support\ServiceProvider;
 
-class PackageServiceProvider extends ServiceProvider
+class DevTubeServiceProvider extends ServiceProvider
 {
     /**
      * Register bindings in the container.
