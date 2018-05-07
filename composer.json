@@ -1,10 +1,10 @@
 {
   "name": "devswebdev/devtube",
-    "description": "A Laravel library for downloading videos from the net by simply passing a URL",
+    "description": "A Laravel package for downloading videos from the net by simply passing a URL",
     "type": "library",
     "version": "1.0.2",
     "require": {
-      "laravel/framework": "5.*",
+      "laravel/framework": "~5",
       "illuminate/support": "~5",
       "masih/youtubedownloader": "~2.9.0"
     },
@@ -12,6 +12,16 @@
         "vlucas/phpdotenv": "^2.4",
         "orchestra/testbench": "^3.4"
     },
+    "keywords": [
+      "devtube",
+      "devswebdev",
+      "laravel",
+      "downloader",
+      "youtube-dl",
+      "laravel-package",
+      "mp4",
+      "youtube-downloader"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -35,5 +45,7 @@
                 "DevsWebDev\\DevTube\\DevTubeServiceProvider"
             ]
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
