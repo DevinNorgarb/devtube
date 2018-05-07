@@ -4,7 +4,7 @@
     "type": "library",
     "version": "1.0.2",
     "require": {
-      "laravel/framework": "5.*",
+      "laravel/framework": "~5",
       "illuminate/support": "~5",
       "masih/youtubedownloader": "~2.9.0"
     },
