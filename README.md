@@ -6,6 +6,9 @@ Install via composer
 composer require devswebdev/devtube
 ```
 
+When you install it as a dependency, there need to be a `cache` directory beside `vendor`
+and it should be writable (e.g. `chmod 777`).
+
 
 <!-- The package will automatically register itself.
 
