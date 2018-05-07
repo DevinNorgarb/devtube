@@ -51,16 +51,6 @@ class DownloadCommand extends Command
         $youtube = new YoutubeDownloader($this->url);
         $youtube->setPath($this->mediaPath);
 
-        $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
-            return  $this->save($filePath);
-        };
-
         $youtube->download();
-    }
-
-    public function save($filePath)
-    {
-        $file = basename($filePath);
-        session([$_SERVER['REMOTE_ADDR'] => $this->mediaPath.$file]);
     }
 }
