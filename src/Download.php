@@ -14,10 +14,10 @@ class Download
     public $savedPath;
 
 
-    public function __construct($url, $path)
+    public function __construct($url, $path = null)
     {
         $this->url =  $url;
-        $this->path =  storage_path("app/public/music");
+        $this->path =  $path ?? storage_path(config('devtube.download_path'));
     }
 
     public function download()
