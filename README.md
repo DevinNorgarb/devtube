@@ -24,8 +24,7 @@ class YoutubeDownloadController extends Controller
 {
     public function download(Request $r)
     {
-        $r->path = storage_path("/");
-        $dl = new Download($r->url, $r->path);
+        $dl = new Download($r->url);
         $dl->download();
     }
 }
