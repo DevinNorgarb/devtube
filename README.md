@@ -7,7 +7,7 @@ composer require devswebdev/devtube
 ```
 
 When you install it as a dependency, there need to be a `cache` directory beside `vendor`
-and it should be writable (e.g. `chmod 777`).
+and it should be writable (e.g. `chmod 775`).
 
 
 <!-- The package will automatically register itself.
@@ -15,6 +15,13 @@ and it should be writable (e.g. `chmod 777`).
 ```bash
 php artisan vendor:publish --provider="DevsWebDev\DevTube\DevTubeServiceProvider" --tag="migrations"
 `` -->
+
+Publish vendor assets
+
+```bash
+php artisan vendor:publish --provider="DevsWebDev\DevTube\DevTubeServiceProvider"
+```
+
 
 An Example
 
