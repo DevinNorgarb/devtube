@@ -2,6 +2,7 @@
 
 namespace DevsWebDev\DevTube;
 
+use Downloader;
 use Illuminate\Support\Facades\Storage;
 use Masih\YoutubeDownloader\YoutubeDownloader;
 
