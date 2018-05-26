@@ -13,11 +13,12 @@ class Download
 
     public $savedPath;
 
+    public $url;
 
     public function __construct($url, $path = null)
     {
         $this->url =  $url;
-        $this->path =  $path ?? storage_path(config('devtube.download_path'));
+        $this->path =  $path ?? config('devtube.download_path');
     }
 
     public function download()
@@ -34,7 +35,6 @@ class Download
 
     public function save($filePath)
     {
-        $file = basename($filePath);
-        session([$_SERVER['REMOTE_ADDR'] => 'app/public/music/'.$file]);
+        session([$_SERVER['REMOTE_ADDR'] => $this->path."/".basename($filePath)]);
     }
 }

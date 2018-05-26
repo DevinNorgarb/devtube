@@ -1,7 +1,7 @@
 
 <?php
 return [
-    'download_path' => env('DOWNLOAD_PATH', 'music'),
+    'download_path' => env('DOWNLOAD_PATH', storage_path('music')),
   ];
 
   ?>
