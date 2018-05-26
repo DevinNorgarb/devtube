@@ -7,12 +7,19 @@
       "laravel/framework": "~5",
       "illuminate/support": "~5",
       "masih/youtubedownloader": "~2.9.0",
-      "php-ffmpeg/php-ffmpeg": "v0.11.1"
+      "php-ffmpeg/php-ffmpeg": "v0.11.1",
+      "php-ffmpeg/binary-driver": "dev-master"
     },
     "require-dev": {
         "vlucas/phpdotenv": "^2.4",
         "orchestra/testbench": "^3.4"
     },
+    "repositories": [
+      {
+        "type": "vcs",
+        "url": "https://github.com/PHP-FFMpeg/BinaryDriver.git"
+      }
+    ],
     "keywords": [
       "devtube",
       "devswebdev",
