@@ -1,5 +1,8 @@
 ## Install DevTube Video Downloader
 
+![alt text](https://devtube.devswebdev.com/img/Screenshot%20from%202018-05-26%2013-54-19.png "devbeats banner")
+
+
 Install via composer
 
 ```bash
