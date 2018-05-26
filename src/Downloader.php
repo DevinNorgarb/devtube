@@ -2,7 +2,9 @@
 
 namespace DevsWebDev\DevTube;
 
-// Ensure the PHP extensions CURL and JSON are installed.
+use DevsWebDev\DevTube\Traits\HelperTrait;
+use DevsWebDev\DevTube\DownloadConfigInterface;
+
 if (!function_exists('curl_init')) {
     throw new Exception('Script requires the PHP CURL extension.');
     exit(0);
@@ -12,19 +14,11 @@ if (!function_exists('json_decode')) {
     exit(0);
 }
 
-// Include helper functions for usort.
-require('comparisonfunctions.usort.php');
 
-/**
- *  Downloader Class
- */
 class Downloader implements DownloadConfigInterface
 {
-    /**
-     *  Class constructor method.
-     *  @access  public
-     *  @return  void
-     */
+    use HelperTrait;
+
     public function __construct($str=null, $instant=false, $out=null)
     {
         // Required YouTube URLs.
