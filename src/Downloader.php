@@ -3,24 +3,25 @@
 namespace DevsWebDev\DevTube;
 
 use DevsWebDev\DevTube\Traits\HelperTrait;
-use DevsWebDev\DevTube\DownloadConfigInterface;
+use DevsWebDev\DevTube\DownloadConfig;
 
 if (!function_exists('curl_init')) {
-    throw new Exception('Script requires the PHP CURL extension.');
+    throw new \Exception('Script requires the PHP CURL extension.');
     exit(0);
 }
 if (!function_exists('json_decode')) {
-    throw new Exception('Script requires the PHP JSON extension.');
+    throw new \Exception('Script requires the PHP JSON extension.');
     exit(0);
 }
 
 
-class Downloader implements DownloadConfigInterface
+class Downloader extends DownloadConfig
 {
     use HelperTrait;
 
     public function __construct($str=null, $instant=false, $out=null)
     {
+        parent::__construct();
         // Required YouTube URLs.
         $this->YT_BASE_URL = "http://www.youtube.com/";
         $this->YT_INFO_URL = $this->YT_BASE_URL . "get_video_info?video_id=%s&el=embedded&ps=default&eurl=&hl=en_US";
@@ -50,15 +51,28 @@ class Downloader implements DownloadConfigInterface
         $this->ffmpegLogfile = false;   # Absolute path to the directory to save ffmpeg logs to.
         $this->FfmpegLogsActive = true; # Whether to log ffmpeg processes (Boolean TRUE/FALSE).
 
-        self::set_downloads_dir(cnfg::Download_Folder);
-        self::set_ffmpegLogs_dir(cnfg::Ffmpeg_LogsDir);
-        self::set_ffmpegLogs_active(cnfg::Ffmpeg_LogsActive);
-        self::set_default_download(cnfg::Default_Download);
-        self::set_download_thumbnail(cnfg::Download_Thumbnail);
-        self::set_thumb_size(cnfg::Default_Thumbsize);
-        self::set_video_quality(cnfg::Default_Videoquality);
-        self::set_audio_quality(cnfg::Default_Audioquality);
-        self::set_audio_format(cnfg::Default_Audioformat);
+
+        // DownloadConfigInterface::Download_Folder
+        // DownloadConfigInterface::Ffmpeg_LogsDir
+        // DownloadConfigInterface::Ffmpeg_LogsActive
+        // DownloadConfigInterface::Default_Download
+        // DownloadConfigInterface::Download_Thumbnail
+        // DownloadConfigInterface::Default_Thumbsize
+        // DownloadConfigInterface::Default_Videoquality
+        // DownloadConfigInterface::Default_Audioquality
+        // DownloadConfigInterface::Default_Audioformat
+
+
+
+        self::set_downloads_dir(DownloadConfig::$Download_Folder);
+        self::set_ffmpegLogs_dir(DownloadConfig::$Ffmpeg_LogsDir);
+        self::set_ffmpegLogs_active(DownloadConfig::$Ffmpeg_LogsActive);
+        self::set_default_download(DownloadConfig::$Default_Download);
+        self::set_download_thumbnail(DownloadConfig::$Download_Thumbnail);
+        self::set_thumb_size(DownloadConfig::$Default_Thumbsize);
+        self::set_video_quality(DownloadConfig::$Default_Videoquality);
+        self::set_audio_quality(DownloadConfig::$Default_Audioquality);
+        self::set_audio_format(DownloadConfig::$Default_Audioformat);
 
         // Optional constructor argument #1 will be used as YouTube Video-ID.
         if ($str != null) {
@@ -93,12 +107,12 @@ class Downloader implements DownloadConfigInterface
 
         /**
          *  Check the public video info feed to check if we got a
-         *  valid Youtube ID. If not, throw an exception and exit.
+         *  valid Youtube ID. If not, throw an \Exception and exit.
          */
         $url = sprintf($this->YT_BASE_URL . "watch?v=%s", $vid_id);
         $url = sprintf($this->YT_INFO_ALT, urlencode($url));
         if (self::curl_httpstatus($url) !== 200) {
-            throw new Exception("Invalid Youtube video ID: $vid_id");
+            throw new \Exception("Invalid Youtube video ID: $vid_id");
             exit();
         } else {
             self::set_video_id($vid_id);
@@ -115,11 +129,11 @@ class Downloader implements DownloadConfigInterface
     {
         /**
          *  If we have a valid Youtube Video Id, try to get the real location
-         *  and download the video. If not, throw an exception and exit.
+         *  and download the video. If not, throw an \Exception and exit.
          */
         $id = self::get_video_id();
         if ($id === false) {
-            throw new Exception("Missing video id. Use set_youtube() and try again.");
+            throw new \Exception("Missing video id. Use set_youtube() and try again.");
             exit();
         } else {
             /**
@@ -130,7 +144,7 @@ class Downloader implements DownloadConfigInterface
             if (self::get_videodata($v_info) === true) {
                 $vids = self::get_url_map($v_info);
                 /**
-                 *  If extracting the URL map failed, throw an exception
+                 *  If extracting the URL map failed, throw an \Exception
                  *  and exit. Try to include the original YouTube error
                  *  - eg "forbidden by country"-message.
                  */
@@ -170,11 +184,11 @@ class Downloader implements DownloadConfigInterface
         $c = ($c !== null) ? $c : 0;
         /**
          *  If we have a valid Youtube Video Id, try to get the real location
-         *  and download the video. If not, throw an exception and exit.
+         *  and download the video. If not, throw an \Exception and exit.
          */
         $id = self::get_video_id();
         if ($id === false) {
-            throw new Exception("Missing video id. Use set_youtube() and try again.");
+            throw new \Exception("Missing video id. Use set_youtube() and try again.");
             exit();
         } else {
             $yt_url_map = self::get_yt_url_map();
@@ -185,7 +199,7 @@ class Downloader implements DownloadConfigInterface
                 $vids = $yt_url_map;
             }
             if (!is_array($vids)) {
-                throw new Exception("Grabbing original file location(s) failed. $vids");
+                throw new \Exception("Grabbing original file location(s) failed. $vids");
                 exit();
             } else {
                 /**
@@ -234,7 +248,7 @@ class Downloader implements DownloadConfigInterface
                     $download = self::curl_get_file($YT_Video_URL, $video);
 
                     if ($download === false) {
-                        throw new Exception("Saving $videoFilename to $path failed.");
+                        throw new \Exception("Saving $videoFilename to $path failed.");
                         exit();
                     } else {
                         if ($download_thumbs === true) {
@@ -259,7 +273,7 @@ class Downloader implements DownloadConfigInterface
     {
         $ffmpeg = self::has_ffmpeg();
         if ($ffmpeg === false) {
-            throw new Exception("You must have Ffmpeg installed in order to use this function.");
+            throw new \Exception("You must have Ffmpeg installed in order to use this function.");
             exit();
         } elseif ($ffmpeg === true) {
             self::set_video_quality(1);
@@ -306,7 +320,7 @@ class Downloader implements DownloadConfigInterface
                         self::set_audio($title .".". $ext);
                         return 0;
                     } else {
-                        throw new Exception("Something went wrong while converting the video into $ext format, sorry!");
+                        throw new \Exception("Something went wrong while converting the video into $ext format, sorry!");
                         exit();
                     }
                 } else {
@@ -315,7 +329,7 @@ class Downloader implements DownloadConfigInterface
                 }
             }
         } else {
-            throw new Exception("Cannot locate your Ffmpeg installation?! Thus, cannot convert the video into $ext format.");
+            throw new \Exception("Cannot locate your Ffmpeg installation?! Thus, cannot convert the video into $ext format.");
             exit();
         }
     }
@@ -472,6 +486,7 @@ class Downloader implements DownloadConfigInterface
                 '37' => array('mp4', '1080p', '1')
             );
 
+            $videos = [];
             foreach ($formats as $format => $meta) {
                 if (isset($tmp[$format])) {
                     $videos[] = array('pref' => $meta[2], 'ext' => $meta[0], 'type' => $meta[1], 'url' => $tmp[$format]);
@@ -683,7 +698,7 @@ class Downloader implements DownloadConfigInterface
         if (is_string($img)) {
             $this->thumb = $img;
         } else {
-            throw new Exception("Invalid thumbnail given: $img");
+            throw new \Exception("Invalid thumbnail given: $img");
         }
     }
 
@@ -697,7 +712,7 @@ class Downloader implements DownloadConfigInterface
         if ($action == "audio" || $action == "video") {
             $this->defaultDownload = $action;
         } else {
-            throw new Exception("Invalid download type. Must be either 'audio', or 'video'.");
+            throw new \Exception("Invalid download type. Must be either 'audio', or 'video'.");
         }
     }
 
@@ -711,7 +726,7 @@ class Downloader implements DownloadConfigInterface
         if (in_array($q, array(0,1))) {
             $this->videoQuality = $q;
         } else {
-            throw new Exception("Invalid video quality.");
+            throw new \Exception("Invalid video quality.");
         }
     }
 
@@ -725,7 +740,7 @@ class Downloader implements DownloadConfigInterface
         if ($q >= 128 && $q <= 320) {
             $this->audioQuality = $q;
         } else {
-            throw new Exception("Audio sample rate must be between 128 and 320.");
+            throw new \Exception("Audio sample rate must be between 128 and 320.");
         }
     }
 
@@ -740,7 +755,7 @@ class Downloader implements DownloadConfigInterface
         if (in_array($ext, $valid_exts)) {
             $this->audioFormat = $ext;
         } else {
-            throw new Exception("Invalid audio filetype '$ext' defined.
+            throw new \Exception("Invalid audio filetype '$ext' defined.
             Valid filetypes are: " . implode(", ", $valid_exts));
         }
     }
@@ -755,7 +770,7 @@ class Downloader implements DownloadConfigInterface
         if (self::valid_dir($dir) !== false) {
             $this->downloadsDir = $dir;
         } else {
-            throw new Exception("Can neither find, nor create download folder: $dir");
+            throw new \Exception("Can neither find, nor create download folder: $dir");
         }
     }
 
@@ -789,7 +804,7 @@ class Downloader implements DownloadConfigInterface
         if (strlen($id) == 11) {
             $this->videoID = $id;
         } else {
-            throw new Exception("$id is not a valid Youtube Video ID.");
+            throw new \Exception("$id is not a valid Youtube Video ID.");
         }
     }
 
@@ -803,7 +818,7 @@ class Downloader implements DownloadConfigInterface
         if (is_string($str)) {
             $this->videoTitle = $str;
         } else {
-            throw new Exception("Invalid title given: $str");
+            throw new \Exception("Invalid title given: $str");
         }
     }
 
@@ -817,7 +832,7 @@ class Downloader implements DownloadConfigInterface
         if ($q == true || $q == false) {
             $this->downloadThumbs = (bool) $q;
         } else {
-            throw new Exception("Invalid argument given to set_download_thumbnail.");
+            throw new \Exception("Invalid argument given to set_download_thumbnail.");
         }
     }
 
@@ -833,7 +848,7 @@ class Downloader implements DownloadConfigInterface
         } elseif ($s == "l") {
             $this->videoThumbSize = "hqdefault";
         } else {
-            throw new Exception("Invalid thumbnail size specified.");
+            throw new \Exception("Invalid thumbnail size specified.");
         }
     }
 
@@ -868,7 +883,7 @@ class Downloader implements DownloadConfigInterface
         if (self::valid_dir($dir) !== false) {
             $this->FfmpegLogsDir = $dir;
         } else {
-            throw new Exception("Can neither find, nor create ffmpeg log directory '$dir', but logging is enabled.");
+            throw new \Exception("Can neither find, nor create ffmpeg log directory '$dir', but logging is enabled.");
         }
     }
 
