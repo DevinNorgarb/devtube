@@ -28,11 +28,8 @@ class Download
     public function download()
     {
         if ($this->format == "audio") {
-            try {
-                new Downloader($this->url, true, 'audio');
-            } catch (\Exception $e) {
-                // die($e->getMessage());
-            }
+            $file = new Downloader($this->url, true, 'audio');
+            return  $this->save($this->path."/".$file->audio);
         } else {
             $youtube = new YoutubeDownloader($this->url);
             $youtube->setPath($this->path);
