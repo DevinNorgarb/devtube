@@ -27,29 +27,22 @@ class Download
 
     public function download()
     {
+        if ($this->format == "audio") {
+            try {
+                new Downloader($this->url, true, 'audio');
+            } catch (\Exception $e) {
+                // die($e->getMessage());
+            }
+        } else {
+            $youtube = new YoutubeDownloader($this->url);
+            $youtube->setPath($this->path);
 
-      // $this->decide();
+            $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
+                return  $this->save($filePath);
+            };
 
-        try {
-            // Instantly download a YouTube video (using the default settings).
-            // new Downloader($this->url, true);
-
-            // Instantly download a YouTube video as MP3 (using the default settings).
-            new Downloader($this->url, true, 'audio');
-        } catch (\Exception $e) {
-            die($e->getMessage());
+            $youtube->download();
         }
-
-        dd("here");
-
-        $youtube = new YoutubeDownloader($this->url);
-        $youtube->setPath($this->path);
-
-        $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
-            return  $this->save($filePath);
-        };
-
-        $youtube->download();
     }
 
     public function save($filePath)
