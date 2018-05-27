@@ -29,7 +29,8 @@ class Download
     {
         if ($this->format == "audio") {
             $file = new Downloader($this->url, true, 'audio');
-            return  $this->save($this->path."/".$file->audio);
+            // return  $this->save($this->path."/".$file->audio);
+            return session([$_SERVER['REMOTE_ADDR'] => $this->path."/".$file->audio]);
         } else {
             $youtube = new YoutubeDownloader($this->url);
             $youtube->setPath($this->path);
