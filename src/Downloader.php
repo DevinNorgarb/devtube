@@ -51,19 +51,6 @@ class Downloader extends DownloadConfig
         $this->ffmpegLogfile = false;   # Absolute path to the directory to save ffmpeg logs to.
         $this->FfmpegLogsActive = true; # Whether to log ffmpeg processes (Boolean TRUE/FALSE).
 
-
-        // DownloadConfigInterface::Download_Folder
-        // DownloadConfigInterface::Ffmpeg_LogsDir
-        // DownloadConfigInterface::Ffmpeg_LogsActive
-        // DownloadConfigInterface::Default_Download
-        // DownloadConfigInterface::Download_Thumbnail
-        // DownloadConfigInterface::Default_Thumbsize
-        // DownloadConfigInterface::Default_Videoquality
-        // DownloadConfigInterface::Default_Audioquality
-        // DownloadConfigInterface::Default_Audioformat
-
-
-
         self::set_downloads_dir(DownloadConfig::$Download_Folder);
         self::set_ffmpegLogs_dir(DownloadConfig::$Ffmpeg_LogsDir);
         self::set_ffmpegLogs_active(DownloadConfig::$Ffmpeg_LogsActive);
