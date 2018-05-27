@@ -1,7 +1,7 @@
 
 <?php
     return [
-         "download_path" => env('DOWNLOAD_PATH', storage_path('music')),
+         "download_path" => env('DOWNLOAD_PATH', storage_path('music/')),
          "default_download" => "video",
          "default_videoquality" => 1,
          "default_audioquality" => 320,
