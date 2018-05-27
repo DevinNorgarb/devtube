@@ -2,6 +2,7 @@
 
 namespace DevsWebDev\DevTube;
 
+use DevsWebDev\DevTube\Downloader;
 use Illuminate\Support\Facades\Storage;
 use Masih\YoutubeDownloader\YoutubeDownloader;
 
@@ -15,22 +16,33 @@ class Download
 
     public $url;
 
-    public function __construct($url, $path = null)
+    public $format;
+
+    public function __construct($url, $path = null, $format = null)
     {
         $this->url =  $url;
         $this->path =  $path ?? config('devtube.download_path');
+        $this->format = $format ?? config('devtube.default_download');
     }
 
     public function download()
     {
-        $youtube = new YoutubeDownloader($this->url);
-        $youtube->setPath($this->path);
+        if ($this->format == "audio") {
+            try {
+                new Downloader($this->url, true, 'audio');
+            } catch (\Exception $e) {
+                // die($e->getMessage());
+            }
+        } else {
+            $youtube = new YoutubeDownloader($this->url);
+            $youtube->setPath($this->path);
 
-        $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
-            return  $this->save($filePath);
-        };
+            $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
+                return  $this->save($filePath);
+            };
 
-        $youtube->download();
+            $youtube->download();
+        }
     }
 
     public function save($filePath)
