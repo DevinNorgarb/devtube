@@ -32,11 +32,11 @@ class Download
 
         try {
             // Instantly download a YouTube video (using the default settings).
-            new Downloader($this->url, true);
+            // new Downloader($this->url, true);
 
             // Instantly download a YouTube video as MP3 (using the default settings).
             new Downloader($this->url, true, 'audio');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             die($e->getMessage());
         }
 

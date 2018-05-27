@@ -110,6 +110,7 @@ class Downloader extends DownloadConfig
          *  valid Youtube ID. If not, throw an \Exception and exit.
          */
         $url = sprintf($this->YT_BASE_URL . "watch?v=%s", $vid_id);
+        echo nl2br($vid_id." received as ".$url." \n");
         $url = sprintf($this->YT_INFO_ALT, urlencode($url));
         if (self::curl_httpstatus($url) !== 200) {
             throw new \Exception("Invalid Youtube video ID: $vid_id");
@@ -162,9 +163,23 @@ class Downloader extends DownloadConfig
                 } else {
                     $quality = self::get_video_quality();
                     if ($quality == 1) {
-                        usort($vids, 'asc_by_quality');
+                        usort($vids, function ($val_a, $val_b) {
+                            $a = $val_a['pref'];
+                            $b = $val_b['pref'];
+                            if ($a == $b) {
+                                return 0;
+                            }
+                            return ($a < $b) ? -1 : +1;
+                        });
                     } elseif ($quality == 0) {
-                        usort($vids, 'desc_by_quality');
+                        usort($vids, function ($val_a, $val_b) {
+                            $a = $val_a['pref'];
+                            $b = $val_b['pref'];
+                            if ($a == $b) {
+                                return 0;
+                            }
+                            return ($a > $b) ? -1 : +1;
+                        });
                     }
                     self::set_yt_url_map($vids);
                     return $vids;
@@ -431,7 +446,7 @@ class Downloader extends DownloadConfig
         $pb_info = self::get_public_info();
 
         if ($pb_info !== false) {
-            $htmlTitle = htmlentities(utf8_decode($pb_info["title"]));
+            $htmlTitle = htmlentities(utf8_decode($pb_info["title"]), ENT_QUOTES | ENT_IGNORE, "UTF-8");
             $videoTitle = self::canonicalize($htmlTitle);
         } else {
             $videoTitle = self::formattedVideoTitle($yt_info);
@@ -466,10 +481,18 @@ class Downloader extends DownloadConfig
             $urls = explode(',', $fmt_url);
             $tmp = array();
 
+
             foreach ($urls as $url) {
-                if (preg_match('/itag=([0-9]+)&url=(.*?)&.*?/si', $url, $um)) {
-                    $u = urldecode($um[2]);
-                    $tmp[$um[1]] = $u;
+                $lines = explode('&', $url);
+                $num = '';
+                $url = '';
+                foreach ($lines as $u) {
+                    $num = ((empty($num)) && (preg_match("/itag=/i", $u))) ? str_replace("itag=", "", $u):$num;
+                    $url = ((empty($url)) && (preg_match("/url=/i", $u))) ? str_replace("url=", "", $u):$url;
+                    if ((!empty($url)) && ((!empty($num)))) {
+                        $tmp[$num] = urldecode($url);
+                        break;
+                    }
                 }
             }
 
@@ -534,7 +557,7 @@ class Downloader extends DownloadConfig
 
         $title = explode("&", $matches[1][0]);
         $title = $title[0];
-        $title = htmlentities(utf8_decode($title));
+        $title = htmlentities(utf8_decode($title), ENT_QUOTES | ENT_IGNORE, "UTF-8");
 
         return self::canonicalize($title);
     }
