@@ -1,0 +1,7 @@
+stages:
+- test
+
+run_tests:
+  script:
+  - composer install
+  - ./vendor/bin/phpunit tests/
