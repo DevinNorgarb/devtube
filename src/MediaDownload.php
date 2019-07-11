@@ -14,6 +14,7 @@ use YoutubeDl\Exception\PrivateVideoException;
 
 
 
+
 if (!function_exists('curl_init')) {
     throw new \Exception('Script requires the PHP CURL extension.');
     exit(0);
@@ -26,14 +27,31 @@ if (!function_exists('json_decode')) {
 
 class MediaDownload
 {
+
+    public $url;
+
+    public $format;
+
     use HelperTrait;
 
-    public static function getPlaylistIds($url, $format)
+    public function __construct($url, $format)
     {
+        $this->url = $url;
+        $this->format = $format;
+    }
 
+    public function getPlaylistIds()
+    {
+        $url = $this->url;
+        $format = $this->format;
 
         $path = storage_path(config('devtube.download_path'));
         $rand = rand(0, 1000000);
+
+
+        if (!file_exists($path)) {
+            mkdir($path);
+        }
 
         if ($format == 'mp4') {
             $format = '-f mp4';
@@ -46,18 +64,22 @@ class MediaDownload
         }
 
         $command = 'cd ' . $path .
-            ' && youtube-dl -j -i  --playlist-start="1" --playlist-end="5"  --skip-download ' . " $limit"  . " $url" . " > $rand.json  ";
+            ' && youtube-dl -j -i  --playlist-start="1" --playlist-end="3"  --skip-download ' . " $limit"  .  escapeshellarg($url) . " > $rand.json  ";
 
         shell_exec($command);
         $fp = fopen($path . "/" . "$rand.json", 'r');
         $filesize = filesize($path . "/" . "$rand.json");
         $array = explode("\n", @fread($fp, $filesize));
+        fclose($fp);
 
+        unlink($path . "/" . "$rand.json");
+
+        // dump($array);
         $array = array_filter($array);
         if (empty($array[0])) {
             return [];
         }
-
+        // dump($array);
         if (in_array("null", array_values($array))) {
             $array = [];
             $array[] = $url;
@@ -66,7 +88,19 @@ class MediaDownload
 
         $all_videos = [];
         foreach ($array as $key => &$value) {
-            $all_videos[$key] = json_decode($value, true);
+
+
+            $media_info = json_decode($value, true);
+
+
+
+            if ($media_info == null) {
+                unset($array[$key]);
+                continue;
+            }
+
+
+            $all_videos[$key] = $media_info;
         }
 
         return $all_videos;

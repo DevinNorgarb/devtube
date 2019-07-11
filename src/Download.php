@@ -30,23 +30,29 @@ class Download
     public function __construct($url = "https://www.youtube.com/watch?v=QxsmWxxouIM", $format = "mp3")
     {
 
-        $url = "https://www.youtube.com/playlist?list=RDCNUTlKqSO-I";
-        $media_info = MediaDownload::getPlaylistIds($url, $format);
-        $arr = [];
-        foreach ($media_info as $key => $info) {
-            $res = MediaDownload::download($info, $format);
+        // $url = "https://www.youtube.com/playlist?list=RDCNUTlKqSO-I";
+        // $url = "https://www.youtube.com/watch?v=oG6YKKWY0hA";
 
-            dump($res);
-            $info = json_decode($info, true);
-            $arr[] = $info;
-            // $info['webpage_url'] = $info['id'];
-        }
+        // $media_info = MediaDownload::getPlaylistIds($url, $format);
+        // $arr = [];
 
-        dump("arr", $arr);
+        // foreach ($media_info as $key => $info) {
+        //     $res = MediaDownload::download($info, $format);
 
-        // $this->url =  $url;
-        // $this->path =   config('devtube.download_path');
-        // $this->format = $format ?? config('devtube.default_download');
+        //     if (!is_array($res)) {
+        //         continue;
+        //     }
+        //     dump($res);
+        //     $info = json_decode($info, true);
+        //     $arr[] = $info;
+        //     // $info['webpage_url'] = $info['id'];
+        // }
+
+        // dump("arr", $arr);
+
+        $this->url =  $url;
+        $this->path =   config('devtube.download_path');
+        $this->format = $format ?? config('devtube.default_download');
     }
 
 
@@ -57,20 +63,26 @@ class Download
      */
     public function download()
     {
-        if ($this->format == "audio") {
-            $file = new Downloader($this->url, true, 'audio');
-            $this->fileName = $file->audio;
-            return  $this->save($file->audio);
-        } else {
-            $youtube = new YoutubeDownloader($this->url);
-            $youtube->setPath($this->path);
 
-            $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
-                return  $this->save(basename($filePath));
-            };
 
-            $youtube->download();
+        $media_info = (new MediaDownload(
+            $this->url,
+            $this->format
+        ))->getPlaylistIds();
+
+
+        $arr = [];
+        foreach ($media_info as $key => $info) {
+            $res = MediaDownload::download($info, $this->format);
+
+            if (!is_array($info)) {
+                unset($media_info[$key]);
+                continue;
+            }
+            $arr[] = $info;
         }
+
+        return $arr;
     }
 
     /**
