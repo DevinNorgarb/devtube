@@ -3,6 +3,8 @@
 namespace DevsWebDev\DevTube;
 
 use DevsWebDev\DevTube\Downloader;
+use DevsWebDev\DevTube\MediaDownload;
+
 use Illuminate\Support\Facades\Storage;
 use Masih\YoutubeDownloader\YoutubeDownloader;
 
@@ -25,11 +27,26 @@ class Download
      * @param [string] $path   [the path of final destination]
      * @param [string] $format [the media type wished to be downloaded ]
      */
-    public function __construct($url, $format = null)
+    public function __construct($url = "https://www.youtube.com/watch?v=QxsmWxxouIM", $format = "mp3")
     {
-        $this->url =  $url;
-        $this->path =   config('devtube.download_path');
-        $this->format = $format ?? config('devtube.default_download');
+
+        $url = "https://www.youtube.com/playlist?list=RDCNUTlKqSO-I";
+        $media_info = MediaDownload::getPlaylistIds($url, $format);
+        $arr = [];
+        foreach ($media_info as $key => $info) {
+            $res = MediaDownload::download($info, $format);
+
+            dump($res);
+            $info = json_decode($info, true);
+            $arr[] = $info;
+            // $info['webpage_url'] = $info['id'];
+        }
+
+        dump("arr", $arr);
+
+        // $this->url =  $url;
+        // $this->path =   config('devtube.download_path');
+        // $this->format = $format ?? config('devtube.default_download');
     }
 
 
@@ -63,7 +80,7 @@ class Download
      */
     public function save($filePath)
     {
-        $this->savedPath = $this->path."/".$filePath;
+        $this->savedPath = $this->path . "/" . $filePath;
         return $this->savedPath;
     }
 }
