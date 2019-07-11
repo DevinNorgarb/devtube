@@ -74,12 +74,8 @@ class Download
         $arr = [];
         foreach ($media_info as $key => $info) {
             $res = MediaDownload::download($info, $this->format);
-
-            if (!is_array($info)) {
-                unset($media_info[$key]);
-                continue;
-            }
-            $arr[] = $info;
+            dd($res);
+            $arr[] = $res;
         }
 
         return $arr;

@@ -114,6 +114,7 @@ class MediaDownload
 
         $youtube_dl_bin_path = config('devtube.bin_path');
 
+        // dd($array);
         if ($format == 'mp4') {
             $options = config('devtube.video');
         } else if ($format == 'mp3') {
@@ -136,6 +137,7 @@ class MediaDownload
         try {
             $invalid_url_error = false;
             $dl = $downloader->download($array['webpage_url']);
+            dump($dl);
         } catch (\Exception $e) {
             $invalid_url_error = true;
         }
