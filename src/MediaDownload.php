@@ -34,10 +34,14 @@ class MediaDownload
 
     use HelperTrait;
 
-    public function __construct($url, $format)
+    public $download;
+
+    public function __construct(Download $download)
     {
-        $this->url = $url;
-        $this->format = $format;
+
+        $this->url = $download->url;
+        $this->format = $download->format;
+        $this->download = $download;
     }
 
     public function getPlaylistIds()
@@ -45,7 +49,7 @@ class MediaDownload
         $url = $this->url;
         $format = $this->format;
 
-        $path = storage_path(config('devtube.download_path'));
+        $path = $this->download->path;
         $rand = rand(0, 1000000);
 
 
@@ -74,12 +78,11 @@ class MediaDownload
 
         unlink($path . "/" . "$rand.json");
 
-        // dump($array);
         $array = array_filter($array);
         if (empty($array[0])) {
             return [];
         }
-        // dump($array);
+
         if (in_array("null", array_values($array))) {
             $array = [];
             $array[] = $url;
@@ -92,13 +95,10 @@ class MediaDownload
 
             $media_info = json_decode($value, true);
 
-
-
             if ($media_info == null) {
                 unset($array[$key]);
                 continue;
             }
-
 
             $all_videos[$key] = $media_info;
         }
@@ -114,7 +114,6 @@ class MediaDownload
 
         $youtube_dl_bin_path = config('devtube.bin_path');
 
-        // dd($array);
         if ($format == 'mp4') {
             $options = config('devtube.video');
         } else if ($format == 'mp3') {
@@ -137,7 +136,6 @@ class MediaDownload
         try {
             $invalid_url_error = false;
             $dl = $downloader->download($array['webpage_url']);
-            dump($dl);
         } catch (\Exception $e) {
             $invalid_url_error = true;
         }
