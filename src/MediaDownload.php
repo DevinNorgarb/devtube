@@ -127,7 +127,7 @@ class MediaDownload
         }
 
         if(! file_exists($path) && !is_dir($path)) {
-            mkdir($path, true);
+            mkdir($path, 0777, true);
         }
 
 
