@@ -77,7 +77,7 @@ class Download
             $arr[] = $res;
         }
 
-        return $arr;
+        return collect($arr);
     }
 
     public function downloadVideo()
