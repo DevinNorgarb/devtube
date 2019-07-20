@@ -3,6 +3,8 @@
 namespace DevsWebDev\DevTube;
 
 use DevsWebDev\DevTube\Downloader;
+use DevsWebDev\DevTube\MediaDownload;
+
 use Illuminate\Support\Facades\Storage;
 use Masih\YoutubeDownloader\YoutubeDownloader;
 
@@ -49,11 +51,11 @@ class Download
      * @param [string] $path   [the path of final destination]
      * @param [string] $format [the media type wished to be downloaded ]
      */
-    public function __construct($url, $format = null)
+    public function __construct($url, $format = "mp3", $path = null)
     {
         $this->url =  $url;
-        $this->path =   config('devtube.download_path');
-        $this->format = $format ?? config('devtube.default_download');
+        $this->path =  $path ?: storage_path(config('devtube.download_path'));
+        $this->format = $format ?: config('devtube.default_download');
     }
 
 
@@ -64,30 +66,18 @@ class Download
      */
     public function download()
     {
-        if ($this->format == "audio") {
-            $this->downloadAudio();
-        } else {
-            $this->downloadVideo();
+        $media_info = (new MediaDownload(
+            $this
+        ))->getPlaylistIds();
+
+
+        $arr = [];
+        foreach ($media_info as $key => $info) {
+            $res = MediaDownload::download($info, $this->format);
+            $arr[] = $res;
         }
-    }
 
-    public function downloadAudio()
-    {
-        try {
-            $file = new Downloader($this->url, true, 'audio');
-            $this->fileName = $file->audio;
-            return  $this->save($file->audio);
-        } catch (\Exception $e) {
-            $youtube = new YoutubeDownloader($this->url);
-            $youtube->setPath($this->path);
-
-            $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
-                $this->save(basename($filePath));
-                $this->convert(basename($filePath));
-            };
-
-            $youtube->download();
-        }
+        return $arr;
     }
 
     public function downloadVideo()
@@ -115,7 +105,7 @@ class Download
      */
     public function save($filePath)
     {
-        $this->savedPath = $this->path."/".$filePath;
+        $this->savedPath = $this->path . "/" . $filePath;
         return $this->savedPath;
     }
 }
