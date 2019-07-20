@@ -10,6 +10,12 @@ Ubuntu:
 sudo apt install ffmpeg
 ```
 
+Install `youtube-dl`
+
+```bash
+sudo apt install youtube-dl
+```
+
 Install via composer
 
 ```bash
