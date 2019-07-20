@@ -2,7 +2,6 @@
 
 ![alt text](https://devtube.devswebdev.com/img/Screenshot%20from%202018-05-26%2013-54-19.png "devbeats banner")
 
-
 Install FFMPEG only if you want to convert videos to mp3 etc
 
 Ubuntu:
@@ -11,16 +10,11 @@ Ubuntu:
 sudo apt install ffmpeg
 ```
 
-
 Install via composer
 
 ```bash
 composer require devswebdev/devtube
 ```
-
-When you install it as a dependency, there need to be a `cache` directory beside `vendor`
-and it should be writable (e.g. `chmod 775`).
-
 
 <!-- The package will automatically register itself.
 
@@ -34,7 +28,6 @@ Publish vendor assets
 php artisan vendor:publish --provider="DevsWebDev\DevTube\DevTubeServiceProvider"
 ```
 
-
 An Example
 
 ```php
@@ -44,16 +37,34 @@ use DevsWebDev\DevTube\Download;
 
 class YoutubeDownloadController extends Controller
 {
-    public function download(Request $r)
+    public function download()
     {
-        $dl = new Download($r->url, $format);
+    $dl = new Download($url = "https://www.youtube.com/watch?v=ye5BuYf8q4o", $format = "mp4", $download_path = "music" );
 
-        //Saves the file to specified directory
-        $dl->download();
+    //Saves the file to specified directory
+    $media_info = $dl->download();
+    $media_info = $media_info->first();
 
-        // Return as a download
-        return response()->download($dl->savedPath);
+    // Return as a download
+    return response()->download($media_info['file']->getPathname());
 
     }
 }
+```
+
+```php
+use DevsWebDev\DevTube\Download;
+
+Route::get('/', function () {
+    $dl = new Download($url = "https://www.youtube.com/watch?v=ye5BuYf8q4o", $format = "mp3", $download_path = "music" );
+
+    //Saves the file to specified directory
+    $media_info = $dl->download();
+    $media_info = $media_info->first();
+
+    // Return as a download
+    return response()->download($media_info['file']->getPathname());
+
+});
+
 ```
