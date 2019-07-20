@@ -52,6 +52,8 @@ class YoutubeDownloadController extends Controller
 }
 ```
 
+Or in your web.php routes file
+
 ```php
 use DevsWebDev\DevTube\Download;
 
