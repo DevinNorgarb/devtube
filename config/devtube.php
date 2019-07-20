@@ -11,7 +11,7 @@ return [
     "ffmpeg_logsActive" => false,
     "ffmpeg_logsDir" => 'logs/',
 
-    "bin_path" => "/home/devin/.local/bin/youtube-dl",
+    "bin_path" => "/usr/bin/youtube-dl",
 
 
     "mp3" => [

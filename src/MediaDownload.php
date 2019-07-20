@@ -126,6 +126,11 @@ class MediaDownload
             return;
         }
 
+        if(! file_exists($path) && !is_dir($path)) {
+            mkdir($path, true);
+        }
+
+
         $downloader = new YoutubeDl($options);
         $downloader->setDownloadPath($path);
         $downloader->setBinPath($youtube_dl_bin_path);
