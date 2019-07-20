@@ -3,6 +3,15 @@
 ![alt text](https://devtube.devswebdev.com/img/Screenshot%20from%202018-05-26%2013-54-19.png "devbeats banner")
 
 
+Install FFMPEG only if you want to convert videos to mp3 etc
+
+Ubuntu:
+
+```bash
+sudo apt install ffmpeg
+```
+
+
 Install via composer
 
 ```bash
@@ -37,14 +46,14 @@ class YoutubeDownloadController extends Controller
 {
     public function download(Request $r)
     {
-        $dl = new Download($r->url);
+        $dl = new Download($r->url, $format);
+
+        //Saves the file to specified directory
         $dl->download();
+
+        // Return as a download
+        return response()->download($dl->savedPath);
+
     }
 }
 ```
-
-<!-- Or if you want to Download and return the download to the view:
-
-```php
-return response()->download(storage_path(session($_SERVER['REMOTE_ADDR'])));
-``` -->

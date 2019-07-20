@@ -10,16 +10,40 @@ use Masih\YoutubeDownloader\YoutubeDownloader;
 
 class Download
 {
+    /**
+     * [public youtube class object]
+     * @var [object]
+     */
     public $youtube;
 
+    /**
+     * [public download filesystem path]
+     * @var [string]
+     */
     public $path;
 
+    /**
+     * [public saved path dir]
+     * @var [string]
+     */
     public $savedPath;
 
+    /**
+     * [public youtube video url]
+     * @var [string]
+     */
     public $url;
 
+    /**
+     * [public whether video or audio is to be downloaded]
+     * @var [string]
+     */
     public $format;
 
+    /**
+     * [downloaded filename]
+     * @var [string]
+     */
     public $fileName;
 
     /**
@@ -37,7 +61,7 @@ class Download
 
 
     /**
-     * Runs the download process
+     * Begin the download process
      * @return [string] [downloaded file path and name]
      */
     public function download()
@@ -56,10 +80,28 @@ class Download
         return $arr;
     }
 
+    public function downloadVideo()
+    {
+        $youtube = new YoutubeDownloader($this->url);
+        $youtube->setPath($this->path);
+
+        $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
+            return  $this->save(basename($filePath));
+        };
+
+        $youtube->download();
+    }
+
+    public function convert($filePath)
+    {
+        exec("ffmpeg -i ".$this->savedPath." -vn -ar 44100 -ac 2 -ab 192000 -f mp3 ".$this->savedPath.".mp3");
+        $this->savedPath = $this->path."/".$filePath.".mp3";
+        return $this->savedPath;
+    }
+
     /**
      * [calls the save method]
-     * @param  [type] $filePath [description]
-     * @return [type]           [description]
+     * @param  [type] $filePath [downloaded files path]
      */
     public function save($filePath)
     {
