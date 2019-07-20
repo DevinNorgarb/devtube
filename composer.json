@@ -2,7 +2,7 @@
   "name": "devswebdev/devtube",
     "description": "A Laravel package for downloading videos from the net by simply passing a URL",
     "type": "library",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "require": {
       "laravel/framework": "~5",
       "illuminate/support": "~5",
