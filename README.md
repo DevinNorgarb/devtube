@@ -34,6 +34,15 @@ Publish vendor assets
 php artisan vendor:publish --provider="DevsWebDev\DevTube\DevTubeServiceProvider"
 ```
 
+This publishes a `devtube.php` file in your `config/` directory
+Please set your default options there.
+
+Make sure your `youtube-dl` path is correct by comparing the output of `which youtube-dl` to the `bin_path` in `devtube.php`
+
+```php
+"bin_path" => "/usr/bin/youtube-dl",
+```
+
 An Example
 
 ```php
