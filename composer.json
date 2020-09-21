@@ -8,7 +8,7 @@
         "illuminate/support": ">=5",
         "masih/youtubedownloader": "~2.9.0",
         "athlon1600/youtube-downloader": "^1.0",
-        "norkunas/youtube-dl-php": "^1.3"
+        "norkunas/youtube-dl-php": "^1.6"
     },
     "require-dev": {
         "vlucas/phpdotenv": "^2.4",
