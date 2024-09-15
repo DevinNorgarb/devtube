@@ -1,6 +1,5 @@
 ## Install DevTube Video Downloader
 
-![alt text](https://devtube.devswebdev.com/img/Screenshot%20from%202018-05-26%2013-54-19.png "devbeats banner")
 
 Install FFMPEG only if you want to convert videos to mp3 etc
 
