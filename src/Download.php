@@ -5,9 +5,6 @@ namespace DevsWebDev\DevTube;
 use DevsWebDev\DevTube\Downloader;
 use DevsWebDev\DevTube\MediaDownload;
 
-use Illuminate\Support\Facades\Storage;
-use Masih\YoutubeDownloader\YoutubeDownloader;
-
 class Download
 {
     /**
@@ -82,14 +79,16 @@ class Download
 
     public function downloadVideo()
     {
-        $youtube = new YoutubeDownloader($this->url);
-        $youtube->setPath($this->path);
+        if (!file_exists($this->path)) {
+            mkdir($this->path, 0777, true);
+        }
 
-        $youtube->onComplete = function ($filePath, $fileSize, $index, $count) {
-            return  $this->save(basename($filePath));
-        };
+        $binPath = config('devtube.bin_path', 'youtube-dl');
+        $command = 'cd '.escapeshellarg($this->path)
+            .' && '.escapeshellcmd($binPath)
+            .' -f mp4 '.escapeshellarg($this->url);
 
-        $youtube->download();
+        shell_exec($command);
     }
 
     public function convert($filePath)
