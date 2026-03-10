@@ -3,7 +3,6 @@
 namespace DevsWebDev\DevTube\Commands;
 
 use Illuminate\Console\Command;
-use Masih\YoutubeDownloader\YoutubeDownloader;
 
 class DownloadCommand extends Command
 {
@@ -48,9 +47,12 @@ class DownloadCommand extends Command
         if (!file_exists($this->mediaPath)) {
             \File::makeDirectory($this->mediaPath);
         }
-        $youtube = new YoutubeDownloader($this->url);
-        $youtube->setPath($this->mediaPath);
 
-        $youtube->download();
+        $binPath = config('devtube.bin_path', 'youtube-dl');
+        $command = 'cd '.escapeshellarg($this->mediaPath)
+            .' && '.escapeshellcmd($binPath)
+            .' -f mp4 '.escapeshellarg($this->url);
+
+        shell_exec($command);
     }
 }
