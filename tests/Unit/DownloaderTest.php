@@ -18,6 +18,12 @@ class DownloaderTest extends TestCase
 {
     protected function tearDown(): void
     {
+        foreach (glob(sys_get_temp_dir() . '/devtube_test_*') ?: [] as $dir) {
+            if (is_dir($dir)) {
+                @rmdir($dir);
+            }
+        }
+
         Mockery::close();
         parent::tearDown();
     }
