@@ -1,35 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DevsWebDev\DevTube;
 
 use DevsWebDev\DevTube\Commands\DownloadCommand;
 use Illuminate\Support\ServiceProvider;
+use YoutubeDl\YoutubeDl;
 
 class DevTubeServiceProvider extends ServiceProvider
 {
-    /**
-     * Register bindings in the container.
-     */
-    public function register()
+    public function register(): void
     {
-        $this->app->bind('devtube', function ($app) {
-            return new DevTube;
+        $this->mergeConfigFrom(__DIR__ . '/../config/devtube.php', 'devtube');
+
+        $this->app->singleton('devtube', function ($app): Downloader {
+            /** @var array<string, mixed> $config */
+            $config = $app['config']->get('devtube');
+
+            $yt = new YoutubeDl();
+
+            if (! empty($config['bin_path'])) {
+                $yt->setBinPath((string) $config['bin_path']);
+            }
+
+            return new Downloader($yt, $config);
         });
 
-        $this->app->bind('command.devtube:download', DownloadCommand::class);
-
-        $this->commands([
-            'command.devtube:download',
-        ]);
+        $this->app->alias('devtube', Downloader::class);
     }
 
-    /**
-     * Perform post-registration booting of services.
-     */
-    public function boot()
+    public function boot(): void
     {
-        $this->publishes([
-        __DIR__.'/../config/devtube.php' => config_path('devtube.php')
-      ], 'config');
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__ . '/../config/devtube.php' => config_path('devtube.php'),
+            ], 'config');
+
+            $this->commands([
+                DownloadCommand::class,
+            ]);
+        }
     }
 }
