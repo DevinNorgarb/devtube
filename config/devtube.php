@@ -1,41 +1,28 @@
-
 <?php
+
 return [
-    "download_path" => env('DOWNLOAD_PATH', 'app/music/'),
-    "default_download" => "video",
-    "default_videoquality" => 1,
-    "default_audioquality" => 320,
-    "default_audioformat" => "mp3",
-    "download_thumbnail" => true,
-    "default_thumbsize" => 'l',
-    "ffmpeg_logsActive" => false,
-    "ffmpeg_logsDir" => 'logs/',
+    // Path to the yt-dlp (or youtube-dl) binary. Use an absolute path if it is
+    // not on the server PATH, e.g. '/usr/local/bin/yt-dlp'.
+    'bin_path' => env('DEVTUBE_YT_DLP_PATH', 'yt-dlp'),
 
-    "bin_path" => "/usr/bin/youtube-dl",
+    // Directory (relative to storage_path()) where downloads are saved.
+    'download_path' => env('DEVTUBE_DOWNLOAD_PATH', 'app/devtube'),
 
+    // Format key (see 'formats' below) used when none is supplied.
+    'default_format' => 'mp4',
 
-    "mp3" => [
-        'output' => '%(title)s.%(ext)s',
-        'metadata-from-title' => '\"%(artist)s - %(title)s\"',
-        'add-metadata' => true,
-        "ignore-errors" => true,
-        "abort-on-error" => false,
-        "extract-audio" => true,
+    // yt-dlp output filename template.
+    'output_template' => '%(title)s.%(ext)s',
+
+    // Per-format yt-dlp options mapped onto norkunas Options.
+    'formats' => [
+        'mp4' => [
+            'format' => 'mp4',
+        ],
+        'mp3' => [
+            'extract_audio' => true,
+            'audio_format' => 'mp3',
+            'audio_quality' => '0',
+        ],
     ],
-    "default" => [
-        'output' => '%(title)s.%(ext)s',
-        'metadata-from-title' => '\"%(artist)s - %(title)s\"',
-        'add-metadata' => true,
-        "ignore-errors" => true,
-        "abort-on-error" => false,
-    ],
-    "video" => [
-        'metadata-from-title' => '\"%(artist)s - %(title)s\"',
-        'add-metadata' => true,
-        'format' => 'mp4',
-        "ignore-errors" => true,
-        "abort-on-error" => false,
-    ]
-
 ];
-?>
