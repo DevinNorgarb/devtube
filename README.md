@@ -1,6 +1,6 @@
 # DevTube
 
-[![Tests](https://github.com/devswebdev/devtube/actions/workflows/tests.yml/badge.svg)](https://github.com/devswebdev/devtube/actions/workflows/tests.yml)
+[![Tests](https://github.com/DevinNorgarb/devtube/actions/workflows/tests.yml/badge.svg)](https://github.com/DevinNorgarb/devtube/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 A Laravel package for downloading videos (and extracting audio) from the web by passing a URL. DevTube is a thin, modern wrapper around the [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) binary via [`norkunas/youtube-dl-php`](https://github.com/norkunas/youtube-dl-php).
