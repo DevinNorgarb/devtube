@@ -3,3 +3,4 @@ composer.lock
 phpunit.xml
 node_modules/
 .idea
+docs/superpowers/
